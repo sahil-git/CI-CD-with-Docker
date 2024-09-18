@@ -24,6 +24,9 @@ jobs:
     - name: Install Composer dependencies
       run: composer install
 
+    - name: Set execute permissions for PHPUnit
+      run: chmod +x ./vendor/bin/phpunit
+
     - name: Run PHPUnit tests
       run: ./vendor/bin/phpunit --bootstrap src/Calculator.php tests/CalculatorTest.php
 
