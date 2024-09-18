@@ -1,6 +1,5 @@
 name: CI/CD Pipeline
 
-# Define when the workflow should run
 on:
   push:
     branches:
@@ -23,8 +22,13 @@ jobs:
     - name: Build the Docker image
       run: docker build -t php-ci-cd-app .
 
-    - name: Test the Docker container
-      run: docker run php-ci-cd-app
+    # Add this section to run the container in detached mode and stop it after testing
+    - name: Run the Docker container
+      run: |
+        docker run -d --name php-ci-cd-app -p 8080:80 php-ci-cd-app
+        sleep 5  # Wait for the container to start
+        docker ps  # Verify it's running
+        docker stop php-ci-cd-app  # Stop the container after the test
 
   deploy:
     runs-on: ubuntu-latest
