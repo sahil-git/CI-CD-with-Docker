@@ -16,19 +16,16 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up Docker
-      uses: docker/setup-buildx-action@v1
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.4'
 
-    - name: Build the Docker image
-      run: docker build -t php-ci-cd-app .
+    - name: Install Composer dependencies
+      run: composer install
 
-    # Add this section to run the container in detached mode and stop it after testing
-    - name: Run the Docker container
-      run: |
-        docker run -d --name php-ci-cd-app -p 8080:80 php-ci-cd-app
-        sleep 5  # Wait for the container to start
-        docker ps  # Verify it's running
-        docker stop php-ci-cd-app  # Stop the container after the test
+    - name: Run PHPUnit tests
+      run: ./vendor/bin/phpunit --bootstrap src/Calculator.php tests/CalculatorTest.php
 
   deploy:
     runs-on: ubuntu-latest
